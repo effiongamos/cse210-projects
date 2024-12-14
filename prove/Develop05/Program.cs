@@ -166,7 +166,7 @@ class Program
 
         while (running)
         {
-            Console.WriteLine("Choose an activity:");
+            Console.WriteLine("Please, Choose an activity:");
             Console.WriteLine("1. Breathing");
             Console.WriteLine("2. Reflection");
             Console.WriteLine("3. Listing");
