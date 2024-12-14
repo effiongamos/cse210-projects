@@ -13,25 +13,23 @@ using System.Threading;
 
 class MindfulnessActivity
  {
-    proctected int duration;
+      protected int duration;
 
     public virtual void StartActivity(string activityName, string description)
     {
         Console.WriteLine($"Starting {activityName}");
-        Console.writeline(description);
-        Console.writeline("How long do you want the activity to last (in seconds)?");
-        setDuration();
-        console.writeline("Prepare to begin.....");
+        Console.WriteLine(description);
+        Console.WriteLine("How long do you want the activity to last (in seconds)?");
+        SetDuration();
+        Console.WriteLine("Prepare to begin...");
         PauseWithAnimation(3);
     }
 
     public void EndActivity(String activityName)
     {
-        console.writeline($"You have completed the {activityName} activity for {duration} seconds. Great Job!");
+        Console.WriteLine($"You have completed the {activityName} activity for {duration} seconds. Great Job!");
         PauseWithAnimation(2);
     }
-
-    
     protected void SetDuration()
     {
         duration = int.Parse(Console.ReadLine());
