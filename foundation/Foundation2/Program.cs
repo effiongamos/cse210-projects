@@ -1,24 +1,164 @@
+//  Name: Benjamin Amos Effiong
+// Instructor: John Reading
+// Project: Encapsulation with Online Ordering
+
 using System;
 using System.Collections.Generic;
 
+// Address class
+class Address
+{
+    private string street;
+    private string city;
+    private string state;
+    private string country;
+
+    public Address(string street, string city, string state, string country)
+    {
+        this.street = street;
+        this.city = city;
+        this.state = state;
+        this.country = country;
+    }
+
+    public bool IsInUSA()
+    {
+        return country.ToLower() == "usa";
+    }
+
+    public string DisplayAddress()
+    {
+        return $"{street}\n{city}, {state}\n{country}";
+    }
+}
+
+// Customer class
+class Customer
+{
+    private string name;
+    private Address address;
+
+    public Customer(string name, Address address)
+    {
+        this.name = name;
+        this.address = address;
+    }
+
+    public bool LivesInUSA()
+    {
+        return address.IsInUSA();
+    }
+
+    public string GetName()
+    {
+        return name;
+    }
+
+    public string GetAddress()
+    {
+        return address.DisplayAddress();
+    }
+}
+
+// Product class
+class Product
+{
+    private string name;
+    private string productId;
+    private double price;
+    private int quantity;
+
+    public Product(string name, string productId, double price, int quantity)
+    {
+        this.name = name;
+        this.productId = productId;
+        this.price = price;
+        this.quantity = quantity;
+    }
+
+    public double TotalCost()
+    {
+        return price * quantity;
+    }
+
+    public string GetProductInfo()
+    {
+        return $"{name} (ID: {productId})";
+    }
+}
+
+// Order class
+class Order
+{
+    private List<Product> products;
+    private Customer customer;
+
+    public Order(Customer customer)
+    {
+        this.customer = customer;
+        products = new List<Product>();
+    }
+
+    public void AddProduct(Product product)
+    {
+        products.Add(product);
+    }
+
+    public double TotalCost()
+    {
+        double total = 0;
+        foreach (Product product in products)
+        {
+            total += product.TotalCost();
+        }
+
+        // Add shipping cost
+        if (customer.LivesInUSA())
+        {
+            total += 5; // $5 for USA
+        }
+        else
+        {
+            total += 35; // $35 for international
+        }
+
+        return total;
+    }
+
+    public string PackingLabel()
+    {
+        string label = "Packing Label:\n";
+        foreach (Product product in products)
+        {
+            label += product.GetProductInfo() + "\n";
+        }
+        return label;
+    }
+
+    public string ShippingLabel()
+    {
+        return $"Shipping Label:\n{customer.GetName()}\n{customer.GetAddress()}";
+    }
+}
+
+// Main program
 class Program
 {
     static void Main(string[] args)
     {
-        // Create products
-        Product product1 = new Product("Laptop", "P123", 500.00m, 2);
-        Product product2 = new Product("Mouse", "P456", 20.00m, 3);
-        Product product3 = new Product("Keyboard", "P789", 30.00m, 1);
-
-        // Create addresses
-        Address address1 = new Address("123 Main St", "New York", "NY", "USA");
-        Address address2 = new Address("456 Elm St", "Toronto", "Ontario", "Canada");
-
-        // Create customers
+        // Create customers and their addresses
+        Address address1 = new Address("123 Main St", "Springfield", "IL", "USA");
         Customer customer1 = new Customer("John Doe", address1);
+
+        Address address2 = new Address("456 Elm St", "Toronto", "ON", "Canada");
         Customer customer2 = new Customer("Jane Smith", address2);
 
-        // Create orders
+        // Create products
+        Product product1 = new Product("Desktop", "A123", 999.99, 1);
+        Product product2 = new Product("Phone Stand", "B456", 49.99, 2);
+        Product product3 = new Product("Mouse", "C789", 89.99, 1);
+
+        // Create orders and add products
         Order order1 = new Order(customer1);
         order1.AddProduct(product1);
         order1.AddProduct(product2);
@@ -27,121 +167,15 @@ class Program
         order2.AddProduct(product2);
         order2.AddProduct(product3);
 
-        // Display order details
-        Console.WriteLine("Order 1:");
-        Console.WriteLine(order1.GetPackingLabel());
-        Console.WriteLine(order1.GetShippingLabel());
-        Console.WriteLine($"Total Price: ${order1.CalculateTotalPrice()}\n");
+        // Display information for order1
+        Console.WriteLine(order1.PackingLabel());
+        Console.WriteLine(order1.ShippingLabel());
+        Console.WriteLine($"Total Cost: ${order1.TotalCost():F2}");
+        Console.WriteLine();
 
-        Console.WriteLine("Order 2:");
-        Console.WriteLine(order2.GetPackingLabel());
-        Console.WriteLine(order2.GetShippingLabel());
-        Console.WriteLine($"Total Price: ${order2.CalculateTotalPrice()}");
-    }
-}
-
-class Product
-{
-    private string _name;
-    private string _productId;
-    private decimal _price;
-    private int _quantity;
-
-    public Product(string name, string productId, decimal price, int quantity)
-    {
-        _name = name;
-        _productId = productId;
-        _price = price;
-        _quantity = quantity;
-    }
-
-    public decimal GetTotalCost()
-    {
-        return _price * _quantity;
-    }
-
-    public string GetName() => _name;
-    public string GetProductId() => _productId;
-}
-
-class Address
-{
-    private string _street;
-    private string _city;
-    private string _state;
-    private string _country;
-
-    public Address(string street, string city, string state, string country)
-    {
-        _street = street;
-        _city = city;
-        _state = state;
-        _country = country;
-    }
-
-    public bool IsInUSA() => _country.ToLower() == "usa";
-
-    public override string ToString()
-    {
-        return $"{_street}\n{_city}, {_state}\n{_country}";
-    }
-}
-
-class Customer
-{
-    private string _name;
-    private Address _address;
-
-    public Customer(string name, Address address)
-    {
-        _name = name;
-        _address = address;
-    }
-
-    public string GetName() => _name;
-    public Address GetAddress() => _address;
-    public bool LivesInUSA() => _address.IsInUSA();
-}
-
-class Order
-{
-    private List<Product> _products;
-    private Customer _customer;
-
-    public Order(Customer customer)
-    {
-        _products = new List<Product>();
-        _customer = customer;
-    }
-
-    public void AddProduct(Product product)
-    {
-        _products.Add(product);
-    }
-
-    public decimal CalculateTotalPrice()
-    {
-        decimal total = 0;
-        foreach (var product in _products)
-        {
-            total += product.GetTotalCost();
-        }
-        total += _customer.LivesInUSA() ? 5.00m : 35.00m;
-        return total;
-    }
-
-    public string GetPackingLabel()
-    {
-        string label = "Packing Label:\n";
-        foreach (var product in _products)
-        {
-            label += $"{product.GetName()} (ID: {product.GetProductId()})\n";
-        }
-        return label;
-    }
-
-    public string GetShippingLabel()
-    {
-        return $"Shipping Label:\n{_customer.GetName()}\n{_customer.GetAddress()}";
+        // Display information for order2
+        Console.WriteLine(order2.PackingLabel());
+        Console.WriteLine(order2.ShippingLabel());
+        Console.WriteLine($"Total Cost: ${order2.TotalCost():F2}");
     }
 }
